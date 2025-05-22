@@ -47,7 +47,13 @@
 				throw new Error(`API error: ${response.status}`);
 			}
 
-			const scores: Score[] = await response.json();
+			const data = await response.json();
+			// Extract scores from the response and map to our Score interface
+			const scores: Score[] = data.scores.map((item: any) => ({
+				player: 'Anonymous', // Adding default player name since it's not in the API response
+				score: item.score,
+				timestamp: item.created
+			}));
 
 			// Find all-time high score
 			allTimeHigh = [...scores].sort((a, b) => b.score - a.score)[0] || null;
