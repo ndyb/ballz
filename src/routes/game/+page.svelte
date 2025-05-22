@@ -7,11 +7,11 @@
 
 	let gameStarted = false;
 	let score = 0;
-	let timeLeft = 30;
+	let timeLeft = 60;
 	let timer: any;
 	let gameBoard: any = [];
-	let targetShape: any = null;
-	let targetColor: any = null;
+	let targetShape: string = '';
+	let targetColor: string = '';
 
 	// Create a new game board with random shapes and colors
 	function createBoard() {
@@ -20,53 +20,131 @@
 			gameBoard.push({
 				id: i,
 				shape: shapes[Math.floor(Math.random() * shapes.length)],
-				color: colors[Math.floor(Math.random() * colors.length)]
+				color: colors[Math.floor(Math.random() * colors.length)],
+				row: Math.floor(i / 4),
+				col: i % 4
 			});
 		}
-		setNewTarget();
-	}
-
-	// Set a new target shape and color
-	function setNewTarget() {
-		targetShape = shapes[Math.floor(Math.random() * shapes.length)];
-		targetColor = colors[Math.floor(Math.random() * colors.length)];
 	}
 
 	// Handle click on a shape
 	function handleClick(item: any) {
 		if (!gameStarted) return;
 
-		if (item.shape === targetShape && item.color === targetColor) {
-			score += 10;
-			// Replace the clicked shape
-			const index = gameBoard.findIndex((shape: any) => shape.id === item.id);
+		// Find adjacent matching shapes
+		const matches = findMatches(item);
 
-			// Generate a new shape and color that are different from the target
-			let newShape, newColor;
-			do {
-				newShape = shapes[Math.floor(Math.random() * shapes.length)];
-				newColor = colors[Math.floor(Math.random() * colors.length)];
-			} while (newShape === targetShape && newColor === targetColor);
+		if (matches.length > 0) {
+			// Add the clicked item to matches
+			matches.push(item);
 
-			gameBoard[index] = {
-				id: item.id,
-				shape: newShape,
-				color: newColor
-			};
+			// Award points
+			score += matches.length * 10;
 
-			setNewTarget();
-		} else {
-			score = Math.max(0, score - 5);
+			// Remove matches from board
+			removeMatches(matches);
+
+			// Make pieces fall down
+			applyGravity();
+
+			// Check if game is won
+			if (gameBoard.length === 0) {
+				clearInterval(timer);
+				gameStarted = false;
+				// Additional win logic could go here
+			}
+		}
+	}
+
+	// Find adjacent shapes that match the clicked shape
+	function findMatches(item: any) {
+		const matches: any[] = [];
+		const clickedShape = item.shape;
+		const clickedColor = item.color;
+
+		// Check adjacent positions (left, right, above, below)
+		const directions = [
+			{ row: 0, col: -1 }, // left
+			{ row: 0, col: 1 }, // right
+			{ row: -1, col: 0 }, // above
+			{ row: 1, col: 0 } // below
+		];
+
+		directions.forEach((dir) => {
+			const adjacentRow = item.row + dir.row;
+			const adjacentCol = item.col + dir.col;
+
+			// Find the adjacent piece if it exists
+			const adjacentPiece = gameBoard.find(
+				(p: any) => p.row === adjacentRow && p.col === adjacentCol
+			);
+
+			// If there's an adjacent piece and it matches the shape and color, add to matches
+			if (
+				adjacentPiece &&
+				adjacentPiece.shape === clickedShape &&
+				adjacentPiece.color === clickedColor
+			) {
+				matches.push(adjacentPiece);
+			}
+		});
+
+		return matches;
+	}
+
+	// Remove matched shapes from the board
+	function removeMatches(matches: any[]) {
+		const matchIds = matches.map((m) => m.id);
+		gameBoard = gameBoard.filter((item: any) => !matchIds.includes(item.id));
+	}
+
+	// Make pieces fall down to fill empty spaces
+	function applyGravity() {
+		// Create a 4x4 grid representation
+		const grid: any[][] = Array(4)
+			.fill(null)
+			.map(() => Array(4).fill(null));
+
+		// Place pieces in the grid
+		gameBoard.forEach((piece: any) => {
+			grid[piece.row][piece.col] = piece;
+		});
+
+		// Make pieces fall down column by column
+		for (let col = 0; col < 4; col++) {
+			let emptyRow = 3;
+
+			// Start from bottom and move up
+			for (let row = 3; row >= 0; row--) {
+				if (grid[row][col] !== null) {
+					// If the piece isn't already at the bottom, move it down
+					if (row !== emptyRow) {
+						const piece = grid[row][col];
+						piece.row = emptyRow;
+						grid[emptyRow][col] = piece;
+						grid[row][col] = null;
+					}
+					emptyRow--;
+				}
+			}
 		}
 
-		gameBoard = [...gameBoard]; // Trigger reactivity
+		// Update gameBoard with new positions
+		gameBoard = [];
+		for (let row = 0; row < 4; row++) {
+			for (let col = 0; col < 4; col++) {
+				if (grid[row][col] !== null) {
+					gameBoard.push(grid[row][col]);
+				}
+			}
+		}
 	}
 
 	// Start the game
 	function startGame() {
 		gameStarted = true;
 		score = 0;
-		timeLeft = 30;
+		timeLeft = 60;
 		createBoard();
 
 		timer = setInterval(() => {
