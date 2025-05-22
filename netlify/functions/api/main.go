@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -34,6 +35,10 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	// Route based on path and method
 	path := request.Path
 	method := request.HTTPMethod
+
+	log.Println("Request path:", path)
+	log.Println("Request method:", method)
+	log.Println("Request body:", request.Body)
 
 	// Get scores - public endpoint
 	if path == "/scores" && method == "GET" {
@@ -68,7 +73,13 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 	// If no route matches
 	if path != "/scores" {
-		return successResponse(42)
+		scores, err := db.GetHighscores(10) // Pass db connection to GetHighscores
+		if err != nil {
+			return errorResponse(500, "Failed to retrieve scores: "+err.Error())
+		}
+		return successResponse(scores)
+
+		//	return successResponse(42)
 	}
 
 	return errorResponse(404, "Not Found")
