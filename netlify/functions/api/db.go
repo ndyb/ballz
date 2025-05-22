@@ -34,7 +34,7 @@ func Connect() (*DB, error) {
 	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=require",
 		host, port, user, password, dbname)
 
-	connStr = "postgresql://postgres:x2XcizoJ1yD75eKr@db.wqxsyspwegwguofrewqb.supabase.co:5432/postgres"
+	//	connStr = "postgresql://postgres:x2XcizoJ1yD75eKr@db.wqxsyspwegwguofrewqb.supabase.co:5432/postgres"
 
 	log.Println("Connecting to database with connection string:", connStr)
 
