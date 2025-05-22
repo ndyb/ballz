@@ -39,7 +39,9 @@
 	async function fetchScores() {
 		try {
 			loading = true;
-			const response = await fetch('/api/scores');
+			const response = await fetch(
+				'https://nimble-gaufre-8a88fc.netlify.app/.netlify/functions/api/scores'
+			);
 
 			if (!response.ok) {
 				throw new Error(`API error: ${response.status}`);
