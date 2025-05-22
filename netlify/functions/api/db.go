@@ -56,6 +56,7 @@ func Connect() (*DB, error) {
 
 // GetHighscores retrieves highscores ordered by score desc with a limit
 func (db *DB) GetHighscores(limit int) ([]Highscore, error) {
+	log.Println("Running GetHighscores with limit:", limit)
 	rows, err := db.Query("SELECT score, created FROM highscores ORDER BY score DESC LIMIT $1", limit)
 	if err != nil {
 		return nil, err
@@ -74,6 +75,8 @@ func (db *DB) GetHighscores(limit int) ([]Highscore, error) {
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
+
+	log.Println("Retrieved highscores:", highscores)
 
 	return highscores, nil
 }

@@ -67,7 +67,11 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	}
 
 	// If no route matches
-	return successResponse(42)
+	if path != "/scores" {
+		return successResponse(42)
+	}
+
+	return errorResponse(404, "Not Found")
 }
 
 func successResponse(data interface{}) (events.APIGatewayProxyResponse, error) {
