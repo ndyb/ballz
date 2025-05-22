@@ -8,6 +8,7 @@ import (
 	"time"
 
 	_ "github.com/jackc/pgx/v5"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 // Highscore represents a row in the highscores table
@@ -39,7 +40,7 @@ func Connect() (*DB, error) {
 	log.Println("Connecting to database with connection string:", connStr)
 
 	// Connect to database
-	db, err := sql.Open("postgres", connStr)
+	db, err := sql.Open("pgx", connStr)
 	if err != nil {
 		return nil, err
 	}
