@@ -77,15 +77,15 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 		// Sample data for testing purposes
 		sampleData := []map[string]interface{}{
-			{"score": 393872, "created": "2025-05-22 09:37:34.987437+00"},
-			{"score": 65, "created": "2025-05-22 09:37:25.175401+00"},
-			{"score": 54, "created": "2025-05-22 09:37:19.346369+00"},
-			{"score": 43, "created": "2025-05-22 09:37:10.335945+00"},
-			{"score": 5, "created": "2025-05-21 18:26:59.365226+00"},
-			{"score": 3, "created": "2025-05-21 17:20:08.739607+00"},
-			{"score": 2, "created": "2025-05-21 16:58:29.489417+00"},
-			{"score": 1, "created": "2025-05-22 09:37:43.338297+00"},
-			{"score": 1, "created": "2025-05-21 16:47:34.136628+00"},
+			{"score": 47331, "created": "2025-05-22 09:37:34.987437+00"},
+			{"score": 23465, "created": "2025-05-22 09:37:25.175401+00"},
+			{"score": 5423, "created": "2025-05-22 09:37:19.346369+00"},
+			{"score": 4312, "created": "2025-05-22 09:37:10.335945+00"},
+			{"score": 513, "created": "2025-05-21 18:26:59.365226+00"},
+			{"score": 23323, "created": "2025-05-21 17:20:08.739607+00"},
+			{"score": 2564, "created": "2025-05-21 16:58:29.489417+00"},
+			{"score": 7618, "created": "2025-05-22 09:37:43.338297+00"},
+			{"score": 16567, "created": "2025-05-21 16:47:34.136628+00"},
 		}
 		return successResponse(sampleData)
 	}

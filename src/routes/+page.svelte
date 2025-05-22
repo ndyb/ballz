@@ -55,6 +55,8 @@
 				timestamp: item.created
 			}));
 
+			console.log('Fetched scores:', scores);
+
 			// Find all-time high score
 			allTimeHigh = [...scores].sort((a, b) => b.score - a.score)[0] || null;
 
