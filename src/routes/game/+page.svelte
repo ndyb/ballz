@@ -40,10 +40,18 @@
 			score += 10;
 			// Replace the clicked shape
 			const index = gameBoard.findIndex((shape: any) => shape.id === item.id);
+
+			// Generate a new shape and color that are different from the target
+			let newShape, newColor;
+			do {
+				newShape = shapes[Math.floor(Math.random() * shapes.length)];
+				newColor = colors[Math.floor(Math.random() * colors.length)];
+			} while (newShape === targetShape && newColor === targetColor);
+
 			gameBoard[index] = {
 				id: item.id,
-				shape: shapes[Math.floor(Math.random() * shapes.length)],
-				color: colors[Math.floor(Math.random() * colors.length)]
+				shape: newShape,
+				color: newColor
 			};
 
 			setNewTarget();
