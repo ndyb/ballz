@@ -7,6 +7,7 @@
 
 	let gameStarted = false;
 	let score = 0;
+	let moves = 0;
 	let timeLeft = 60;
 	let timer: any;
 	let gameBoard: any = [];
@@ -25,34 +26,54 @@
 				col: i % 4
 			});
 		}
+
+		// Set a random target shape and color
+		targetShape = shapes[Math.floor(Math.random() * shapes.length)];
+		targetColor = colors[Math.floor(Math.random() * colors.length)];
 	}
 
 	// Handle click on a shape
 	function handleClick(item: any) {
 		if (!gameStarted) return;
 
-		// Find adjacent matching shapes
-		const matches = findMatches(item);
+		// Check if item matches target shape and color
+		if (item.shape === targetShape && item.color === targetColor) {
+			// Remove this single shape
+			removeMatches([item]);
+			score += 10;
+			moves++;
 
-		if (matches.length > 0) {
-			// Add the clicked item to matches
-			matches.push(item);
-
-			// Award points
-			score += matches.length * 10;
-
-			// Remove matches from board
-			removeMatches(matches);
+			// Pick a new target
+			targetShape = shapes[Math.floor(Math.random() * shapes.length)];
+			targetColor = colors[Math.floor(Math.random() * colors.length)];
 
 			// Make pieces fall down
 			applyGravity();
+		} else {
+			// Find adjacent matching shapes
+			const matches = findMatches(item);
 
-			// Check if game is won
-			if (gameBoard.length === 0) {
-				clearInterval(timer);
-				gameStarted = false;
-				// Additional win logic could go here
+			if (matches.length > 0) {
+				// Add the clicked item to matches
+				matches.push(item);
+
+				// Award points
+				score += matches.length * 10;
+				moves++;
+
+				// Remove matches from board
+				removeMatches(matches);
+
+				// Make pieces fall down
+				applyGravity();
 			}
+		}
+
+		// Check if game is won
+		if (gameBoard.length === 0) {
+			clearInterval(timer);
+			gameStarted = false;
+			// Additional win logic could go here
 		}
 	}
 
@@ -144,6 +165,7 @@
 	function startGame() {
 		gameStarted = true;
 		score = 0;
+		moves = 0;
 		timeLeft = 60;
 		createBoard();
 
