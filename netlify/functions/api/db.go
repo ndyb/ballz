@@ -14,7 +14,7 @@ import (
 // Highscore represents a row in the highscores table
 type Highscore struct {
 	Score     int       `json:"score"`
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created"`
 }
 
 // DB is a wrapper around sql.DB
@@ -56,7 +56,7 @@ func Connect() (*DB, error) {
 
 // GetHighscores retrieves highscores ordered by score desc with a limit
 func (db *DB) GetHighscores(limit int) ([]Highscore, error) {
-	rows, err := db.Query("SELECT score, created_at FROM highscores ORDER BY score DESC LIMIT $1", limit)
+	rows, err := db.Query("SELECT score, created FROM highscores ORDER BY score DESC LIMIT $1", limit)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (db *DB) GetHighscores(limit int) ([]Highscore, error) {
 }
 
 // InsertHighscore adds a new highscore to the table
-// Note: created_at is set automatically by PostgreSQL
+// Note: created is set automatically by PostgreSQL
 func (db *DB) InsertHighscore(score int) error {
 	_, err := db.Exec("INSERT INTO highscores (score) VALUES ($1)", score)
 	return err
