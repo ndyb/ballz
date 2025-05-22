@@ -74,71 +74,74 @@
 	onMount(fetchScores);
 </script>
 
-<div class="container mx-auto px-4 py-8">
+<div class="container">
 	<!-- Page title -->
-	<h1 class="text-4xl font-bold text-center my-8 text-blue-600">Ballz Leaderboard</h1>
+	<header>
+		<h1>🏆 Ballz Leaderboard</h1>
+		<div class="header-underline"></div>
+	</header>
 
 	{#if error}
-		<div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-8">
+		<div class="error-message">
 			<p>Error loading scores: {error}</p>
 		</div>
 	{/if}
 
 	{#if loading}
-		<div class="flex justify-center my-12">
-			<div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+		<div class="loader-container">
+			<div class="loader"></div>
 		</div>
 	{:else}
 		<!-- Highest scores section -->
-		<div class="flex flex-col md:flex-row justify-center items-center gap-8 mb-12">
+		<div class="top-scores">
 			<!-- All-time high score -->
-			<div class="bg-blue-100 rounded-lg p-6 shadow-lg text-center">
-				<h2 class="text-xl font-semibold text-blue-800 mb-2">All-Time High</h2>
+			<div class="score-card all-time">
+				<h2>All-Time High</h2>
 				{#if allTimeHigh}
-					<p class="text-6xl font-bold text-blue-600">{allTimeHigh.score.toLocaleString()}</p>
-					<p class="text-gray-600 mt-2">Player: {allTimeHigh.player}</p>
-					<p class="text-gray-500 text-sm">{formatDate(allTimeHigh.timestamp)}</p>
+					<p class="score-value">{allTimeHigh.score.toLocaleString()}</p>
+					<p class="player-name">{allTimeHigh.player}</p>
+					<p class="timestamp">{formatDate(allTimeHigh.timestamp)}</p>
 				{:else}
-					<p class="text-2xl text-gray-500">No data available</p>
+					<p class="no-data">No data available</p>
 				{/if}
 			</div>
 
 			<!-- Daily high score -->
-			<div class="bg-green-100 rounded-lg p-6 shadow-lg text-center">
-				<h2 class="text-xl font-semibold text-green-800 mb-2">Today's High</h2>
+			<div class="score-card daily">
+				<h2>Today's High</h2>
 				{#if dailyHigh}
-					<p class="text-5xl font-bold text-green-600">{dailyHigh.score.toLocaleString()}</p>
-					<p class="text-gray-600 mt-2">Player: {dailyHigh.player}</p>
-					<p class="text-gray-500 text-sm">{formatDate(dailyHigh.timestamp)}</p>
+					<p class="score-value">{dailyHigh.score.toLocaleString()}</p>
+					<p class="player-name">{dailyHigh.player}</p>
+					<p class="timestamp">{formatDate(dailyHigh.timestamp)}</p>
 				{:else}
-					<p class="text-2xl text-gray-500">No scores today</p>
+					<p class="no-data">No scores today</p>
 				{/if}
 			</div>
 		</div>
 
 		<!-- Recent scores table -->
-		<div class="overflow-x-auto bg-white rounded-lg shadow-md">
-			<h2 class="text-2xl font-bold text-center my-4 text-gray-800">Recent Scores</h2>
-			<table class="min-w-full">
-				<thead class="bg-gray-100">
+		<div class="scores-table-container">
+			<h2>Recent Scores</h2>
+			<table>
+				<thead>
 					<tr>
-						<th class="py-3 px-4 text-left text-gray-700 font-semibold">Rank</th>
-						<th class="py-3 px-4 text-left text-gray-700 font-semibold">Player</th>
-						<th class="py-3 px-4 text-left text-gray-700 font-semibold">Score</th>
-						<th class="py-3 px-4 text-left text-gray-700 font-semibold">Date</th>
+						<th>Rank</th>
+						<th>Player</th>
+						<th>Score</th>
+						<th>Date</th>
 					</tr>
 				</thead>
-				<tbody class="divide-y divide-gray-200">
+				<tbody>
 					{#each recentScores as score, i}
-						<tr class="hover:bg-gray-50">
-							<td class="py-3 px-4 text-gray-800">{i + 1}</td>
-							<td class="py-3 px-4 text-gray-800">{score.player}</td>
-							<td class="py-3 px-4 text-gray-800 font-semibold">{score.score.toLocaleString()}</td>
-							<td class="py-3 px-4 text-gray-600">{formatDate(score.timestamp)}</td>
+						<tr>
+							<td>{i + 1}</td>
+							<td>{score.player}</td>
+							<td class="score-cell">{score.score.toLocaleString()}</td>
+							<td>{formatDate(score.timestamp)}</td>
 						</tr>
 					{:else}
-						<tr>
-							<td colspan="4" class="py-4 text-center text-gray-500">No recent scores available</td>
+						<tr class="empty-row">
+							<td colspan="4">No recent scores available</td>
 						</tr>
 					{/each}
 				</tbody>
@@ -146,3 +149,207 @@
 		</div>
 	{/if}
 </div>
+
+<style>
+	.container {
+		max-width: 1000px;
+		margin: 0 auto;
+		padding: 2rem 1rem;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
+
+	header {
+		margin-bottom: 3rem;
+	}
+
+	header h1 {
+		font-size: 3rem;
+		text-align: center;
+		background: linear-gradient(45deg, #4a6cf7, #2dd4bf);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		margin-bottom: 0.5rem;
+		font-weight: 800;
+		letter-spacing: -1px;
+	}
+
+	.header-underline {
+		height: 4px;
+		width: 120px;
+		margin: 0 auto;
+		background: linear-gradient(90deg, #4a6cf7, #2dd4bf);
+		border-radius: 2px;
+	}
+
+	.error-message {
+		background: linear-gradient(to right, #ffccd5, #ffd6e0);
+		border-left: 4px solid #ff4d6d;
+		color: #c9184a;
+		padding: 1rem;
+		margin-bottom: 2rem;
+		border-radius: 0 4px 4px 0;
+	}
+
+	.loader-container {
+		display: flex;
+		justify-content: center;
+		margin: 3rem 0;
+	}
+
+	.loader {
+		width: 50px;
+		height: 50px;
+		border: 3px solid rgba(74, 108, 247, 0.3);
+		border-top-color: #4a6cf7;
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.top-scores {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 2rem;
+		margin-bottom: 3rem;
+	}
+
+	.score-card {
+		padding: 2rem;
+		border-radius: 12px;
+		text-align: center;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+		transition:
+			transform 0.2s,
+			box-shadow 0.2s;
+	}
+
+	.score-card:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+	}
+
+	.all-time {
+		background: linear-gradient(135deg, #e2f0ff, #f0f8ff);
+		border-left: 4px solid #4a6cf7;
+	}
+
+	.daily {
+		background: linear-gradient(135deg, #e2f8f0, #f0fffa);
+		border-left: 4px solid #2dd4bf;
+	}
+
+	.score-card h2 {
+		font-size: 1.25rem;
+		font-weight: 600;
+		margin-bottom: 1rem;
+		color: #333;
+	}
+
+	.score-value {
+		font-size: 3.5rem;
+		font-weight: 800;
+		line-height: 1;
+		margin-bottom: 0.75rem;
+		background: linear-gradient(45deg, #4a6cf7, #2dd4bf);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.all-time .score-value {
+		font-size: 4rem;
+	}
+
+	.player-name {
+		font-size: 1.1rem;
+		font-weight: 500;
+		color: #444;
+		margin-bottom: 0.25rem;
+	}
+
+	.timestamp {
+		font-size: 0.875rem;
+		color: #777;
+	}
+
+	.no-data {
+		font-size: 1.25rem;
+		color: #999;
+		margin-top: 1rem;
+	}
+
+	.scores-table-container {
+		background: white;
+		border-radius: 12px;
+		box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+		overflow: hidden;
+	}
+
+	.scores-table-container h2 {
+		text-align: center;
+		padding: 1.5rem;
+		margin: 0;
+		font-size: 1.5rem;
+		color: #333;
+		border-bottom: 1px solid #f1f1f1;
+	}
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	thead {
+		background: linear-gradient(45deg, #f8f9fe, #f1f4fd);
+	}
+
+	th {
+		padding: 1rem;
+		text-align: left;
+		font-weight: 600;
+		color: #555;
+		border-bottom: 2px solid #edf2f7;
+	}
+
+	td {
+		padding: 1rem;
+		border-bottom: 1px solid #edf2f7;
+		color: #444;
+	}
+
+	tbody tr:hover {
+		background-color: #f9fafb;
+	}
+
+	.score-cell {
+		font-weight: 600;
+		color: #4a6cf7;
+	}
+
+	.empty-row td {
+		text-align: center;
+		color: #999;
+		padding: 2rem;
+	}
+
+	@media (max-width: 768px) {
+		.top-scores {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+		}
+
+		.score-value,
+		.all-time .score-value {
+			font-size: 3rem;
+		}
+
+		th,
+		td {
+			padding: 0.75rem;
+		}
+	}
+</style>
